@@ -6,18 +6,11 @@ public class Main {
         FeedbackStubConsumer consumer = new FeedbackStubConsumer(
             "feedback.stub"
         );
-        ResponseDeliveryProducer responseDeliveryProducer =
-            new ResponseDeliveryProducer("response.delivery");
-        FeedbackStubProducer feedbackStubProducer = new FeedbackStubProducer(
-            "feedback.stub"
-        );
 
         Runtime.getRuntime().addShutdownHook(
                 new Thread(() -> {
                     System.out.println("Shutting down..");
                     consumer.close();
-                    responseDeliveryProducer.close();
-                    feedbackStubProducer.close();
                 })
             );
 
@@ -27,14 +20,7 @@ public class Main {
             while (true) {
                 String processedPrompt = consumer.consumeAndProcess();
                 if (processedPrompt != null) {
-                    responseDeliveryProducer.produce(
-                        "new_responsedel",
-                        processedPrompt
-                    );
-                    feedbackStubProducer.produce(
-                        "new_feedback",
-                        processedPrompt
-                    );
+                    System.out.println("Processed prompt: " + processedPrompt);
                 }
 
                 Thread.sleep(100);
