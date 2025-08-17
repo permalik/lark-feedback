@@ -1,6 +1,11 @@
 package org.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Main {
+
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
         FeedbackStubConsumer consumer = new FeedbackStubConsumer(
@@ -9,24 +14,24 @@ public class Main {
 
         Runtime.getRuntime().addShutdownHook(
                 new Thread(() -> {
-                    System.out.println("Shutting down..");
+                    logger.info("Shutting down..");
                     consumer.close();
                 })
             );
 
-        System.out.printf("Starting Feedback..");
+        logger.info("Starting Feedback..");
 
         try {
             while (true) {
                 String processedPrompt = consumer.consumeAndProcess();
                 if (processedPrompt != null) {
-                    System.out.println("Processed prompt: " + processedPrompt);
+                    logger.info("Processed prompt: " + processedPrompt);
                 }
 
                 Thread.sleep(100);
             }
         } catch (InterruptedException err) {
-            System.err.println("Interrupted: " + err.getMessage());
+            logger.error("Interrupted: " + err.getMessage());
         }
     }
 }

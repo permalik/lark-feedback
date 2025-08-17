@@ -5,13 +5,18 @@ import java.util.Collections;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FeedbackStubConsumer {
 
+    private static final Logger logger = LoggerFactory.getLogger(
+        FeedbackStubConsumer.class
+    );
     private final KafkaConsumer<String, String> consumer;
 
     public FeedbackStubConsumer(String topic) {
-        System.out.println("Initializing consumer..");
+        logger.info("Initializing consumer..");
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "lark-feedback");
@@ -26,7 +31,7 @@ public class FeedbackStubConsumer {
 
         consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Collections.singletonList(topic));
-        System.out.println("Subscribed to topic");
+        logger.info("Subscribed to topic");
     }
 
     public String consumeAndProcess() {
@@ -34,8 +39,8 @@ public class FeedbackStubConsumer {
             Duration.ofMillis(2)
         );
         for (ConsumerRecord<String, String> record : records) {
-            System.out.printf(
-                "Consumed: key=%s, value=%s, offset=%s",
+            logger.info(
+                "Consumed: key={}, value={}, offset={}",
                 record.key(),
                 record.value(),
                 record.offset()
