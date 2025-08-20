@@ -1,0 +1,12 @@
+services:
+  lark-feedback:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lark_feedback
+    ports:
+      - "8004:8004"
+
+networks:
+  lark-network:
+    external: true
